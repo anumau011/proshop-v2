@@ -3,6 +3,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 dotenv.config();
+import cors from 'cors';
 import connectDB from './config/db.js';
 import productRoutes from './routes/productRoutes.js';
 import userRoutes from './routes/userRoutes.js';
@@ -19,6 +20,15 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+// Enable CORS for the frontend during development. Set FRONTEND_URL in your
+// environment to override the default.
+const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
+app.use(
+  cors({
+    origin: FRONTEND_URL,
+    credentials: true,
+  })
+);
 
 app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
